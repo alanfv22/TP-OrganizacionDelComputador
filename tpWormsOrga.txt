@@ -1,0 +1,556 @@
+
+.data
+insertarPendiente: .asciz "insertarPendiente\n"
+insertarDesplazamiento: .asciz "insertarDesplazamiento\n"
+insertarPosicionPiso: .asciz "Insertar desplazamiento del gusano\n"
+mensajeGanaste: .asciz "G*A*N*A*S*T*E"
+mensajeGameOver: .asciz " GAME OVER  :_( "
+mensajeSalirJuego: .asciz "Para terminar juego presiona 0. Para seguir presiona cualquier otra tecla\n"
+pendiente: .word 0
+desplazamiento: .word 0
+saleONoSale: .word
+vidaJugador1: .int 5
+vidaJugador2: .int 5
+posicionPiso: .int 0
+posicionPisoInsertada: .word 0 
+posicionFilaGusano: .word 22
+mapa:                                                                                                                                                                                          
+.asciz "______________________________________________________________________________________|\n"  // 89char
+.asciz "                                                                                      |\n"
+.asciz "                  *** WORMS ARMAGEDON - ORGA 1 ***                                    |\n"
+.asciz "______________________________________________________________________________________|\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                   +------------+                                                     |\n"
+.asciz "                   |            |                                     @               |\n"
+.asciz "                   |            |                                     ####            |\n"
+.asciz "                   |            |                                    +----------------+\n"
+.asciz "                   +------------+                                    |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                               +--------------+      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "+---------------------------------------+      |              |      |                |\n"
+.asciz "|Jugador:1  Vidas:5                     |      +--------------+      |                |\n"
+.asciz "|                                       |                            |                |\n"
+.asciz "|Turno de jugador:1                     |                            |                |\n"
+.asciz "|                                       |                            +----------------+\n"
+.asciz "|                                       |                                             |\n"
+.asciz "+---------------------------------------+                                             |\n"
+.asciz "______________________________________________________________________________________|\n" // 30
+mapaLimpio:
+.asciz "______________________________________________________________________________________|\n"  // 89char
+.asciz "                                                                                      |\n"
+.asciz "                  *** WORMS ARMAGEDON - ORGA 1 ***                                    |\n"
+.asciz "______________________________________________________________________________________|\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                                                                                      |\n"
+.asciz "                   +------------+                                                     |\n"
+.asciz "                   |            |                                     @               |\n"
+.asciz "                   |            |                                     ####            |\n"
+.asciz "                   |            |                                    +----------------+\n"
+.asciz "                   +------------+                                    |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                                                     |                |\n"
+.asciz "                                               +--------------+      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "                                               |              |      |                |\n"
+.asciz "+---------------------------------------+      |              |      |                |\n"
+.asciz "|Jugador:1  Vidas:5                     |      +--------------+      |                |\n"
+.asciz "|                                       |                            |                |\n"
+.asciz "|Turno de jugador:1                     |                            |                |\n"
+.asciz "|                                       |                            +----------------+\n"
+.asciz "|                                       |                                             |\n"
+.asciz "+---------------------------------------+                                             |\n"
+.asciz "______________________________________________________________________________________|\n"
+.text
+
+
+imprimirMapa:
+                .fnstart
+                        mov r7,#4   //salida por pantalla
+                        mov r0,#1   // salida cadena
+                        mov r2, #2671 // caracteres a leer
+                        ldr r1, =mapa
+                        swi 0
+
+                        bx lr
+                .fnend
+
+mensajeInsertarPen:
+                .fnstart
+                        mov r7,#4   //salida por pantalla
+                        mov r0,#1   // salida cadena
+                        mov r2, #18
+                        ldr r1, =insertarPendiente
+                        swi 0
+
+                        bx lr
+                .fnend
+
+mensajeInsertarDes:
+                .fnstart
+                        mov r7,#4   //salida por pantalla
+                        mov r0,#1   // salida cadena
+                        mov r2, #23 // caracteres a leer
+                        ldr r1, =insertarDesplazamiento
+                        swi 0
+
+                        bx lr
+                .fnend
+
+mensajeInsertarPosicionPiso:
+                .fnstart
+                        mov r7,#4   //salida por pantalla
+                        mov r0,#1   // salida cadena
+                        mov r2, #35 // caracteres a leer
+                        ldr r1, =insertarPosicionPiso
+                        swi 0
+
+                        bx lr
+                .fnend
+
+imprimirMensajeSalirJuego:
+                .fnstart
+                        mov r7,#4 
+                        mov r0,#1
+                        mov r2, #74
+                        ldr r1,=mensajeSalirJuego
+                        
+                        swi 0
+                        bx lr
+                .fnend
+
+ingresaSalirJuego:
+                .fnstart
+                        mov r7,#3
+                        mov r0,#0
+                        mov r2,#2
+                        ldr r1,=saleONoSale
+                        swi 0
+                        bx lr
+                .fnend
+                        
+insertarPen:
+
+                .fnstart
+                                mov r7,#3 // ingreso por teclado
+                                mov r0,#0 // ingresar cadena
+                                mov r2,#2 // leer caracter, pendiente
+                                ldr r1,=pendiente
+                                swi 0
+                                bx lr
+                .fnend
+
+insertarDes:
+
+                .fnstart
+                                mov r7,#3 // ingreso por teclado
+                                mov r0,#0 // ingresar cadena
+                                mov r2,#2 // leer caracter, desplazamiento
+                                ldr r1,=desplazamiento
+                                swi 0
+                                bx lr
+                .fnend
+
+
+insertarposicionPiso:
+
+                .fnstart
+                                mov r7,#3 // ingreso por teclado
+                                mov r0,#0 // ingresar cadena
+                                mov r2,#3 // leer caracteres
+                                ldr r1,=posicionPisoInsertada     
+                                swi 0
+                                bx lr
+                .fnend
+
+validarGusano:
+                .fnstart
+                
+                        mov r10,#10
+                        ldr r0,=posicionPisoInsertada
+                        eor r2,r2    // resultado parcial
+                otro:
+                        ldrb r1,[r0]   // leo caracter
+                        cmp r1,#10    // Se fija si la cadena el salto de linea
+                        beq finValidarGusano
+                        mul r2,r10
+                        add r0,#1       // paso a siguiente caracter
+                        sub r1,#0x30 
+                        add r2,r1       // sumo r1 a resultado parcial
+                        bal otro
+                        
+                                        
+                finValidarGusano:                       
+                        ldr r4,=posicionPiso
+                        str r2,[r4]                     // guardo en etiqueta posicionPiso el valor q hay en r2
+                bx lr                                   // este valor se usa para comparar si es mas grande que 37 lo cual va a pedir que se ingrese otro (pasa en el main)
+
+                .fnend
+
+dibujarGusano:
+                .fnstart                        
+                        ldr r1,=mapa
+                        
+                        mov r5,#'#'  // para dibujar el gusano
+                        mov r6,#0  // contador
+                        cmp r2,#11              @Si el desplazamiento(posicionPiso) del gusano es de 11, dibuja el gusano en posicion especial
+                        beq bonusGusano
+
+                        mov r3,#1869            // me desplazo hasta el comienzo de la linea
+                        add r3,r2               // sumo desplazamiento que ingreso el usuario
+                        add r1,r3               // me desplazo el total en el mapa
+                        bal forGusano
+
+                bonusGusano:
+                        mov r3,#1561
+                        add r3,r2
+                        add r1,r3
+                        ldr r4,=posicionPiso
+                        mov r2,#59 // desplazamiento horizontal para nueva posicion de gusano
+                        str r2,[r4]
+                        mov r8,#18 // nueva posicion de fila del gusano, ya no es 22
+                        ldr r9,=posicionFilaGusano
+                        str r8,[r9]                     
+
+                        forGusano:
+                        cmp r6,#4               // contador en 4: #### 
+                        beq dibujoCabeza
+                        strb r5,[r1]            // dibujo #
+                        add r1,#1               // me desplazo siguiente pos en el mapa
+                        add r6,#1
+                        bal forGusano
+
+                        dibujoCabeza:
+                                sub r1,#90              // subo una fila en el mapa
+                                mov r5,#'@'             // cabeza gusano
+                                strb r5,[r1]            // dibujo cabeza
+                        bx lr
+                .fnend  
+                
+dibujarRecta:
+                .fnstart
+                        push {lr}
+                        ldr r10,=posicionPiso
+                        ldr r4,[r10]
+                        add r4,#4 @Correccion disparo, dibuja al costado derecho del gusano 
+                        ldr r3,=posicionFilaGusano
+                        ldr r3,[r3]
+                        mov r5, #0          // uso r5 para calcular cuanto me tengo que desplazar hasta llegar al gusanoi
+                        
+                        bl mensajeInsertarPen
+                        bl insertarPen                        
+                        bl mensajeInsertarDes
+                        bl insertarDes
+                        
+                        mov r6,#0 //contador
+                        mov r11,#0 //mientras siga en 0 va a seguir dibujando. Termina cuando hay colision o llega hasta fila 4
+
+                        ldr r10,=pendiente   // cargo pendiente
+                        ldrb r10,[r10]
+                        sub r10,#0x30     // paso el valor
+
+                        ldr r7,=desplazamiento
+                        ldrb r7,[r7] // cargo valor ingresado x teclado
+                        sub r7,#0x30 // paso valor a decimal
+                        
+                        for:
+                           mov r8,#'*'           
+
+                           ldr r1,=mapa
+                                        
+                           bl obtenerPosMatriz       @carga en r5 el valor de la posicion del desplazamiento hasta llegar a gusano
+                           sub r3,#1   // resto uno a la fila para q vaya para arriba el disparo        
+                           cmp r3,#3
+                           ble fin // si el disparo toca el techo deja de dibujar
+                        
+                           add r1,r5 // me desplazo segun obtener matriz
+                         
+                           add r1,r7 //se suma el desplazamiento ingresado 
+                           ldrb r2,[r1] // cargo lo que hay en el mapa en la posicion actual ya desplazada 
+                          
+                           bl colision  
+                        
+                           cmp r2,#10    // se fija si hay salto de linea para no sobreescribirlo
+                           beq proxFor
+                         
+                           cmp r11,#1 // se fija si termino de dibujar 
+                           beq fin       
+                           strb r8,[r1] // dibuja * en el mapa
+                           add r4,r10   
+                                
+                proxFor:
+                           bal for
+                        
+                           
+                        fin:
+                                        
+                        pop {lr}
+                        bx lr
+                .fnend
+
+
+obtenerPosMatriz: // calcula cuanto me tengo que desplazar hasta llegar a gusano
+                .fnstart
+
+                         eor r9,r9
+                         mov r0,#89     @Cantidad de columnas
+                         sub r9,r3,#1     @Resto uno a la cantidad de filas
+                         mul r9,r0        @Multiplico filas -1 x total columnas
+                 
+                        add r5,r9,r4     @Sumo total obtenido multiplicacion + columna gusano
+                         eor r9,r9
+
+                bx lr
+                .fnend
+
+colision:
+        .fnstart
+        push {lr}
+        cmp r2,#'@'
+        beq ganaste
+
+        cmp r2,#'-'
+        beq hayColision
+
+        cmp r2,#'+'
+        beq hayColision
+
+        cmp r2,#'|'
+        beq hayColision
+
+        cmp r2,#'#'
+        beq  hayColision
+        
+        cmp r2,#'_'
+        beq hayColision
+
+        pop {lr}
+        bx lr
+        .fnend
+
+ganaste:
+        .fnstart
+        push {lr}
+        mov r8,#'X'
+        strb r8,[r1]
+
+        ldr r1,=mapa
+        mov r5,#2139
+        add r1,r5 // desplazo hasta posicion deseada para escribir ganaste
+        ldr r3,=mensajeGanaste
+        
+        sigueGanaste:
+                ldrb r4,[r3]
+                cmp r4,#00
+                beq ganoEImprime
+                strb r4,[r1]
+                add r1,#1
+                add r3,#1
+                bal sigueGanaste
+
+        pop {lr}
+        bx lr   
+        .fnend
+
+hayColision:
+        .fnstart
+        push {lr}
+        mov r8,#'X'
+        strb r8,[r1]
+        mov r11,#1
+        
+        pop {lr}
+        bx lr
+        .fnend
+
+jugador1:
+        .fnstart        
+        push {lr}
+        ldr r4,=vidaJugador1
+        ldr r5,[r4]// cargo valor de vida de jugador 1
+        push {r5} // guardo valor de vida de jugador 1 en sp
+        push {r4} // guardo dic de mem de vidaJugador1
+
+        
+        ldr r1,=mapa
+        mov r2,#2056
+        add r1,r2 // desplazo hasta posicion deseada para escribir jugador1
+        mov r3,#'1'
+        strb r3,[r1]
+
+        bl dibujarRecta 
+        
+        pop {r4} // restauro valor de dic de mem de vidaJugador1
+        pop {r5} // restauro valor de vida de jugador1
+        sub r5,#1 // resto vida
+        str r5,[r4] // cargo valor de vida de jugador 1 
+
+        ldr r1,=mapa
+        mov r2,#2065
+        add r6,r5,#0x30      //Convierto el numero en ascii para guardarlo en el mapa
+        add r1,r2            // me desplazo hasta la posicion de la vida
+        strb r6,[r1]
+
+        add r1,#178   //setea el turno del jugador  
+        mov r2,#'2'
+        strb r2,[r1]
+
+        bl imprimirMapa
+
+        pop {lr}
+        bx lr
+        .fnend
+
+
+
+jugador2:  
+           .fnstart        
+        push {lr}    
+        ldr r6,=vidaJugador2
+        ldr r7,[r6]// cargo valor de vida de jugador 2
+        push {r7} // guardo valor de vida de jugador 2 en sp
+        push {r6} // guardo dic de mem de vidaJugador2
+
+        ldr r1,=mapa
+        mov r2,#2056
+        add r1,r2 // desplazo hasta posicion deseada para escribir jugador2
+        mov r3,#'2'
+        strb r3,[r1]
+
+        bl dibujarRecta
+
+        pop {r6} // restauro valor de dic de mem de vidaJugador2
+        pop {r7} // restauro valor de vida de jugador2
+        sub r7,#1 // resto vida
+        str r7,[r6] // cargo valor de vida de jugador 2 
+
+        ldr r1,=mapa
+        mov r2,#2065
+        add r8,r7,#0x30
+        add r1,r2
+        strb r8,[r1]
+
+        add r1,#178 // setea el turno del jugador
+        mov r2,#'1'
+        strb r2,[r1]
+
+        bl imprimirMapa
+
+        pop {lr}
+        bx lr 
+        .fnend
+
+juego:
+        .fnstart
+        push {lr}
+        proxTurno:      
+                bl jugador1
+                bl jugador2 
+                ldr r6,=vidaJugador2
+                ldr r7,[r6]
+                cmp r7,#0 //comparo vida de segundo jugador solamente ya que juega J1 y luego J2, entonces cuando J2 tenga vida:0 J1 tambien lo tendra
+                beq  out 
+                bal proxTurno
+        out:
+                pop {lr}
+                bx lr
+        .fnend
+ 
+limpioElMapa:
+        .fnstart
+                ldr r0,=mapaLimpio
+                ldr r2,=mapa
+                mov r6,#2400 // cantidad de caracter a leer del mapa 
+                mov r5,#0 @Contador
+        sigueMapa:
+                ldrb r1,[r0] // traigo caracter de mapaLimpio
+                cmp r5,r6       // comparo si ya reemplaze todos caractetes de mapa 
+                beq terminoMapa
+                strb r1,[r2] // reemplazo caracter de mapaLimpio a mapa ( limpieza de mapa)
+                add r0,#1 // me desplazo 1 pos de mapaLimpio
+                add r2,#1 // me desplazo 1 pos de mapa
+                add r5,#1 // sumo contador
+                bal sigueMapa   
+        
+        terminoMapa:    
+        bx lr
+        .fnend
+
+.global main
+
+main:
+        inicio:
+                ldr r0,=posicionFilaGusano
+                mov r1,#22                      @Para reiniciar donde esta el gusano luego de que haya entrado en el bonus
+                str r1,[r0]
+                bl mensajeInsertarPosicionPiso
+                bl insertarposicionPiso
+                bl validarGusano        
+                ldr r1,=posicionPiso //25
+                ldr r2,[r1]
+                cmp r2,#37                      // si el valor es 37 o mas te pide ingresar el valor de desplazamiento nuevamente
+                bge inicio
+        
+                bl dibujarGusano
+                bl imprimirMapa
+                bl juego
+                        
+                ldr r1,=mapa
+                mov r5,#2243
+                add r1,r5 // desplazo hasta posicion deseada para escribir gameover
+                ldr r3,=mensajeGameOver // cargo mensaje
+
+        sigueGameOver:
+                ldrb r4,[r3]
+                cmp r4,#00
+                beq terminoJuego
+                strb r4,[r1]
+                add r1,#1
+                add r3,#1
+                bal sigueGameOver
+        
+      terminoJuego:
+                bl imprimirMapa
+                
+                bl limpioElMapa
+                bl imprimirMensajeSalirJuego // muestra mensaje por pantalla
+                bl ingresaSalirJuego // guarda valor ingresado en saleONosale
+                ldr r10,=saleONoSale
+                ldrb r10,[r10]
+                cmp r10,#0x30  // Comparo si ingreso un 0 el usuario (30 en ascii)-> Es lo mismo un cmp r10,#'0'
+                beq saliendo
+                mov r2,#5 // carga vidas a jugadores
+                ldr r0,=vidaJugador1
+                ldr r1,=vidaJugador2
+                str r2,[r0]
+                str r2,[r1]
+                bal inicio
+
+        ganoEImprime:
+                bl imprimirMapa
+        saliendo:
+                mov r7,#1
+                swi 0
+
+
+
+
+
+
+
+                                             ^O Guardar                                                  ^W Buscar                           
